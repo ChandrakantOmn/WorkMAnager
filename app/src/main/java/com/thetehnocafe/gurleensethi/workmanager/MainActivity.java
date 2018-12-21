@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 .addTag("simple_work")
                 .build();
 
-        final PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(MyWorker.class, 12, TimeUnit.HOURS)
+        final PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(MyWorker.class, 5, TimeUnit.SECONDS)
                 .addTag("periodic_work")
                 .build();
 
@@ -102,5 +102,23 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+        WorkManager.getInstance().getStatusById(periodicWorkRequest.getId())
+                .observe(this, new Observer<WorkStatus>() {
+                    @Override
+                    public void onChanged(@Nullable WorkStatus workStatus) {
+                        if (workStatus != null) {
+                            mTextView.append("periodicWorkRequest: " + workStatus.getState().name() + "\n");
+                        }
+
+                        if (workStatus != null && workStatus.getState().isFinished()) {
+                            String message = workStatus.getOutputData().getString(MyWorker.EXTRA_OUTPUT_MESSAGE, "Default message");
+                            mTextView.append("periodicWorkRequest (Data): " + message);
+                        }
+
+
+                    }
+                });
+
     }
 }

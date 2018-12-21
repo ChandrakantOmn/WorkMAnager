@@ -1,18 +1,13 @@
 package com.thetehnocafe.gurleensethi.workmanager;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import androidx.work.Data;
 import androidx.work.Worker;
-
-import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class MyWorker extends Worker {
 
@@ -35,7 +30,7 @@ public class MyWorker extends Worker {
         String text = getInputData().getString(EXTRA_TEXT, "Default Text");
 
         //sendNotification("Simple Work Manager", "I have been send by WorkManager!");
-        sendNotification(title, text);
+        sendNotification(title, text+"  "+ id());
 
         Data output = new Data.Builder()
                 .putString(EXTRA_OUTPUT_MESSAGE, "I have come from MyWorker!")
@@ -60,6 +55,14 @@ public class MyWorker extends Worker {
                 .setContentText(message)
                 .setSmallIcon(R.mipmap.ic_launcher);
 
-        notificationManager.notify(1, notification.build());
+        notificationManager.notify(id(), notification.build());
+    }
+
+    int id() {
+        double randomDouble = Math.random();
+        randomDouble = randomDouble * 50 + 1;
+        int randomInt = (int) randomDouble;
+        System.out.println(randomInt);
+        return randomInt;
     }
 }
